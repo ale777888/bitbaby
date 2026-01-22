@@ -1,5 +1,5 @@
 // BitBaby - Professional Logic (Final)
-// 注意：按你的要求，不改任何显示效果/主题/交互/逻辑，只新增“收益”列 + 必要bug修复
+// 注意：按你的要求，不改任何显示效果/主题/交互/逻辑，只新增“收益”列 + 必要bug修复 + 新增“进行中”状态选项
 
 const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -31,11 +31,12 @@ function setTodayIfEmpty(){
   }
 }
 
-// === 状态文案：保持你当前版本不变 ===
+// === 状态文案：新增“进行中” ===
 const STATUS = {
-  hit:  { label: '达到预计收益', cls: 'status-hit'  },
-  miss: { label: '未达到预计收益', cls: 'status-miss' },
-  over: { label: '超额完成收益', cls: 'status-over' },
+  hit:      { label: '达到预计收益', cls: 'status-hit'  },
+  progress: { label: '进行中',       cls: 'status-progress' }, // ✅ 新增
+  miss:     { label: '未达到预计收益', cls: 'status-miss' },
+  over:     { label: '超额完成收益', cls: 'status-over' },
 };
 
 function statusOptions(selected){
@@ -45,7 +46,7 @@ function statusOptions(selected){
 }
 
 function applyStatusClass(selectEl){
-  selectEl.classList.remove('status-hit','status-miss','status-over');
+  selectEl.classList.remove('status-hit','status-progress','status-miss','status-over');
   const meta = STATUS[selectEl.value] || STATUS.hit;
   selectEl.classList.add(meta.cls);
 }
@@ -91,7 +92,6 @@ function escapeHTML(v){
 function rowTemplate(data = {}){
   const { pair='', amount='', profit='', status='hit' } = data;
 
-  // 保持原结构与 class，不动UI，只插入收益列，并且对 value 做转义
   const tr = document.createElement('tr');
   tr.innerHTML = `
     <td><input class="cell-input pair-input" placeholder="BTC/USDT" value="${escapeHTML(pair)}"></td>
@@ -113,7 +113,6 @@ function rowTemplate(data = {}){
   const sel = tr.querySelector('.status-input');
   applyStatusClass(sel);
 
-  // 返佣计算逻辑不变
   computeFeesForRow(tr);
 
   return tr;
@@ -159,7 +158,6 @@ function bindEvents(){
       computeFeesForRow(e.target.closest('tr'));
       refreshTotals();
     } else {
-      // 收益/币种等输入：仅保存，不改变任何额外表现
       debouncedAutoSave();
     }
   });
@@ -192,7 +190,6 @@ function bindEvents(){
   document.getElementById('tradeDate').addEventListener('input', debouncedAutoSave);
 }
 
-// 导出修正：确保居中和样式统一（保持你当前逻辑）
 function replaceInputsForExport(root){
   root.querySelectorAll('input.cell-input').forEach(inp=>{
     const div = document.createElement('div');
@@ -235,12 +232,10 @@ async function savePNG(){
 
   const clone = panel.cloneNode(true);
 
-  // 复制 input/select 的值 —— 新增收益列后数量仍匹配
   const srcInputs = panel.querySelectorAll('input, select');
   const dstInputs = clone.querySelectorAll('input, select');
   srcInputs.forEach((el, i) => { if(dstInputs[i]) dstInputs[i].value = el.value; });
 
-  // 移除操作列（按钮列）—— 仍按最后一列移除
   clone.querySelectorAll('button').forEach(b=>b.remove());
   const ths = clone.querySelectorAll('th');
   if(ths.length) ths[ths.length-1].remove();
@@ -282,14 +277,12 @@ function exportCSV(){
     return [...r.querySelectorAll('input, select')].map(i => i.value);
   });
 
-  // 增加 Profit 列（收益），其余不变
   const header = ["Pair","Amount","L1","L2","L3","Profit","Status"];
   const lines = [
     header.map(csvEscape).join(","),
     ...rows.map(cols => cols.map(csvEscape).join(","))
   ].join("\n");
 
-  // 保持原 data:text/csv 下载方式（尽量不改变行为）
   const csvContent = "data:text/csv;charset=utf-8," + encodeURIComponent(lines);
   const link = document.createElement("a");
   link.setAttribute("href", csvContent);
@@ -300,7 +293,6 @@ function exportCSV(){
 }
 
 function loadDemo(){
-  // 仅增加 profit 字段，其他不变
   const demo = [
     {pair:'ETH/USDT', amount:'5000', profit:'', status:'hit'},
     {pair:'SOL/USDT', amount:'1200', profit:'', status:'over'},
@@ -338,7 +330,6 @@ function init(){
       const tbody = document.getElementById('tbody');
       tbody.innerHTML = '';
 
-      // === Bug Fix #3：兼容旧存储（profit 缺失时补空）===
       const rows = Array.isArray(d?.rows) ? d.rows : [];
       rows.forEach(r => {
         if (r && typeof r === 'object' && !('profit' in r)) r.profit = '';

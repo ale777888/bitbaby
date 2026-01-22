@@ -158,7 +158,6 @@ input, select, button, textarea { font-family: inherit; }
 .neg{ color: var(--neg); }
 .muted{ color: var(--muted); }
 
-/* 状态栏 - 加宽以容纳中文 */
 /* 状态栏 - 加宽以容纳中文（防止被挤成只剩箭头） */
 .status-col{
   width: 200px;
@@ -168,7 +167,7 @@ input, select, button, textarea { font-family: inherit; }
   width: 60px;
   min-width: 60px;
 }
- 
+
 .status-select{
   width: 100%;
   text-align: center;
@@ -187,6 +186,9 @@ input, select, button, textarea { font-family: inherit; }
 .status-miss{ background-color: rgba(255, 59, 48, 0.1); color: var(--neg); }
 .status-over{ background-color: rgba(254, 202, 2, 0.1); color: var(--bb-yellow); }
 
+/* ✅ 新增：进行中（不影响其它三种状态） */
+.status-progress{ background-color: rgba(255, 255, 255, 0.06); color: #cfcfcf; }
+
 /* 操作按钮 */
 .action-col{ width: 60px; }
 .btn.small.danger{
@@ -198,7 +200,6 @@ input, select, button, textarea { font-family: inherit; }
 
 /* === 底部统计页脚 (Dashboard Footer) === */
 .table-footer{
-  /* 边框和圆角逻辑，使其看起来像表格的延伸 */
   border: 1px solid var(--border);
   border-top: 1px solid rgba(255,255,255,0.08); 
   border-bottom-left-radius: 16px;
@@ -208,18 +209,16 @@ input, select, button, textarea { font-family: inherit; }
   padding: 18px 30px;
   
   display: flex;
-  justify-content: space-around; /* 均匀横向分布 */
+  justify-content: space-around;
   align-items: center;
   gap: 20px;
 }
 
-/* 统计胶囊项 */
 .footer-item{
   display: flex;
   align-items: center;
   gap: 12px;
   font-size: 14px;
-  /* 胶囊背景 */
   background: rgba(0,0,0,0.3); 
   padding: 12px 28px;
   border-radius: 99px;
@@ -253,6 +252,12 @@ input, select, button, textarea { font-family: inherit; }
   justify-content: center; border-radius: 6px; font-size: 13px; font-weight: 700; height: 36px !important;
 }
 
+/* ✅ 修复：保存图片后状态文字变白（html2canvas 对 var() 偶发不稳定） */
+.status-export.status-hit  { color: #00E096 !important; -webkit-text-fill-color: #00E096 !important; }
+.status-export.status-over { color: #FECA02 !important; -webkit-text-fill-color: #FECA02 !important; }
+.status-export.status-miss { color: #FF3B30 !important; -webkit-text-fill-color: #FF3B30 !important; }
+.status-export.status-progress { color: #cfcfcf !important; -webkit-text-fill-color: #cfcfcf !important; }
+
 /* 顶部按钮 */
 .top-actions{ margin-bottom: 20px; gap: 12px; }
 .btn{ font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase; border-radius: 8px; transition: all .2s; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
@@ -262,7 +267,6 @@ input, select, button, textarea { font-family: inherit; }
   .bb-brand{ justify-content: center; }
   .bb-right{ justify-content: center; }
   
-  /* 手机上自动转为纵向排列 */
   .table-footer{ flex-direction: column; gap: 10px; padding: 20px; }
   .footer-item{ width: 100%; justify-content: space-between; }
 }
