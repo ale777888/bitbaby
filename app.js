@@ -265,7 +265,6 @@ function bindEvents(){
   if(clearBtn && bulkInput){
     clearBtn.addEventListener('click', ()=>{ bulkInput.value=''; bulkInput.focus(); });
   }
-  });
   document.getElementById('savePNG').addEventListener('click', savePNG);
   document.getElementById('tradeDate').addEventListener('input', debouncedAutoSave);
 }
