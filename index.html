@@ -10,13 +10,34 @@
 
   <div class="top-actions">
     <button id="addRow" class="btn primary">＋ 新增一行</button>
-    <button id="resetDemo" class="btn">加载示例</button>
     <div style="flex:1"></div>
-    <button id="exportCSV" class="btn">导出 CSV</button>
     <button id="savePNG" class="btn success">保存图片</button>
   </div>
 
   <div class="container">
+
+  <div class="bb-card" style="margin-bottom:20px;">
+    <div style="color:var(--bb-yellow); font-weight:800; font-size:14px; letter-spacing:1px; margin-bottom:12px;">
+      批量粘贴解析
+    </div>
+
+    <textarea id="bulkInput" class="cell-input" placeholder="交易对/币种\t金额(USDT)\t收益\t状态(可选)
+示例：
+BTC/USDT	5000	120	达到预计收益
+ETH/USDT	3000	80	进行中"
+      style="height:160px; text-align:left; padding:12px; line-height:1.5; border:1px solid var(--border); background: rgba(255,255,255,0.03);"></textarea>
+
+    <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:14px;">
+      <button id="parseBulk" class="btn primary">解析生成</button>
+      <button id="clearBulk" class="btn">清空</button>
+    </div>
+
+    <div style="margin-top:10px; color:var(--muted); font-size:12px; line-height:1.5;">
+      支持：Tab / 多空格 / 逗号分列；可带表头行。<br/>
+      列顺序：交易对/币种、金额、收益、状态（可选；默认“达到预计收益”）。
+    </div>
+  </div>
+
     <div id="capturePanel" class="bb-card">
 
       <div class="bb-titlebar-v8">
